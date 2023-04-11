@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    "Services\\HistoryService\\obj": true,
+    "Services\\HistoryService\\Properties": true,
+    "Services\\HistoryService\\appsettings.Development.json": true,
+    "Services\\HistoryService\\appsettings.json": true,
+    "Services\\HistoryService\\HistoryService.csproj": true,
+    ".vscode": true,
+    "Services\\HistoryService\\.vs": true,
+    "Services\\HistoryService\\bin": true,
+    "Services\\HistoryService\\HistoryService.csproj.user": true,
+    "Services\\HistoryService\\HistoryService.sln": true
+  }
+}
