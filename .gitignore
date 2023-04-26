@@ -400,3 +400,6 @@ FodyWeavers.xsd
 # Ignore the data.csv and shortdata.csv files from the GitHub repo
 data.csv
 shortdata.csv
+
+# Ignore the model.pkl file from the GitHub repo
+model.pkl
