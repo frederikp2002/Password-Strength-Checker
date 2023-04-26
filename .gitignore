@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# The dataset used for the Stength Checker Service
+StrengthCheckerService/Data/data.csv
+StrengthCheckerService/Data/shortdata.csv
+StrengthCheckerService/Data/model.pkl
