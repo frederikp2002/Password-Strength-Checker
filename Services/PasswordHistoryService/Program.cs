@@ -23,10 +23,6 @@ builder.Services.AddDbContext<PasswordHistoryContext>(
         options.UseSqlServer(builder.Configuration.GetConnectionString("PasswordHistoryDbConnection"),
             b => b.MigrationsAssembly("SqlMigrations")));
 
-//builder.Services.AddDbContext<PasswordHistoryContext>(options =>
-//   options.UseSqlServer(builder.Configuration.GetConnectionString(
-//        @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PasswordHistory;Integrated Security=True")));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
