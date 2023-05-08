@@ -27,7 +27,7 @@ namespace PasswordHistoryService.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("help");
+                return NotFound(e);
             }
         }
     }

@@ -9,15 +9,13 @@ using PasswordHistoryService.Features.Infrastructure.Repositories.Implementation
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IGetAllQuery<QueryResultDto>, GetAllQuery>();
+builder.Services.AddScoped<iRepository, Repository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Add services to the container
-builder.Services.AddScoped<IGetAllQuery<QueryResultDto>, GetAllQuery>();
-builder.Services.AddScoped<iRepository, Repository>();
 
 // Database features
 builder.Services.AddDbContext<PasswordHistoryContext>(
