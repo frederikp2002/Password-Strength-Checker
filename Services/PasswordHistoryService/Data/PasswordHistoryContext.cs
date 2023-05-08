@@ -5,6 +5,10 @@ namespace PasswordHistoryService.Data
 {
     public class PasswordHistoryContext : DbContext
     {
+        public PasswordHistoryContext(DbContextOptions<PasswordHistoryContext> options) : base(options)
+        {
+        }
+
         public DbSet<PasswordEntity> Passwords { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

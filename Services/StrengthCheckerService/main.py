@@ -18,13 +18,13 @@ def word(password):
 
 # If it has, load the model and TfidVectorizer from disk
 # If it hasn't, train the model and save it to disk
-if os.path.exists("Services/StrengthCheckerService/model.pkl"):
+if os.path.exists("Password-Strength-Checker\Services\StrengthCheckerService\model.pkl"):
     print("Loading model from disk... ")
-    with open('Services/StrengthCheckerService/model.pkl', 'rb') as f:
+    with open('Password-Strength-Checker\Services\StrengthCheckerService\model.pkl', 'rb') as f:
         model, tdif = pickle.load(f)
 else:
     print("Training model...")
-    data = pd.read_csv("Services/StrengthCheckerService/Data/shortdata.csv", error_bad_lines=False)
+    data = pd.read_csv("Password-Strength-Checker\Services\StrengthCheckerService\Data\shortdata.csv", error_bad_lines=False)
 
     # The numbers 0, 1 and 2 means "weak", "medium" and "strong" respectively
     # We will map the numbers to the corresponding words

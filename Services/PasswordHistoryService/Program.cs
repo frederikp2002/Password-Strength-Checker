@@ -1,3 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using PasswordHistoryService.Data;
+using PasswordHistoryService.Features.Application.Repositories;
+using PasswordHistoryService.Features.Applications.Dtos;
+using PasswordHistoryService.Features.Applications.Queries;
+using PasswordHistoryService.Features.Applications.Queries.Implementation;
+using PasswordHistoryService.Features.Infrastructure.Repositories.Implementations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +14,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add services to the container
+builder.Services.AddScoped<IGetAllQuery<QueryResultDto>, GetAllQuery>();
+builder.Services.AddScoped<iRepository, Repository>();
+
+// Database features
+builder.Services.AddDbContext<PasswordHistoryContext>(
+    options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("PasswordHistoryDbConnection"),
+            b => b.MigrationsAssembly("SqlMigrations")));
+
+//builder.Services.AddDbContext<PasswordHistoryContext>(options =>
+//   options.UseSqlServer(builder.Configuration.GetConnectionString(
+//        @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PasswordHistory;Integrated Security=True")));
 
 var app = builder.Build();
 

@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PasswordHistoryService.Features.Domain.Models
+﻿namespace PasswordHistoryService.Features.Applications.Dtos
 {
-    public class PasswordEntity
+    public class QueryResultDto
     {
-        [Key] public int PasswordId { get; set; }
+        public int PasswordId { get; set; }
         public string PasswordHash { get; set; } = null!;
         public string PasswordStrength { get; set; } = null!;
         public DateTime PasswordDateTime { get; set; }

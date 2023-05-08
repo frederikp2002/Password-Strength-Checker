@@ -1,4 +1,4 @@
-﻿namespace HistoryService.Features.Application.Queries
+﻿namespace PasswordHistoryService.Features.Applications.Queries
 {
     public interface IGetAllQuery<T>
     {
