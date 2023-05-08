@@ -20,8 +20,7 @@ builder.Services.AddSwaggerGen();
 // Database features
 builder.Services.AddDbContext<PasswordHistoryContext>(
     options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("PasswordHistoryDbConnection"),
-            b => b.MigrationsAssembly("SqlMigrations")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("PasswordHistoryDbConnection")));
 
 var app = builder.Build();
 
