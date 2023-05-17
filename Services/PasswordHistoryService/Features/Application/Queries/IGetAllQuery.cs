@@ -1,7 +1,6 @@
-﻿namespace PasswordHistoryService.Features.Applications.Queries
+﻿namespace PasswordHistoryService.Features.Application.Queries;
+
+public interface IGetAllQuery<T>
 {
-    public interface IGetAllQuery<T>
-    {
-        IEnumerable<T> GetAll();
-    }
+    IEnumerable<T> GetAll();
 }

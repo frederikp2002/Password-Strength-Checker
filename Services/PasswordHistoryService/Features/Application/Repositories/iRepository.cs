@@ -1,9 +1,10 @@
-﻿using PasswordHistoryService.Features.Applications.Dtos;
+﻿using PasswordHistoryService.Features.Application.Dtos;
+using PasswordHistoryService.Features.Domain.Models;
 
-namespace PasswordHistoryService.Features.Application.Repositories
+namespace PasswordHistoryService.Features.Application.Repositories;
+
+public interface iRepository
 {
-    public interface iRepository
-    {
-        IEnumerable<QueryResultDto> GetAll();
-    }
+    void Create(PasswordEntity passwordEntity);
+    IEnumerable<QueryResultDto> GetAll();
 }

@@ -7,6 +7,10 @@ from sklearn.ensemble import RandomForestClassifier
 import getpass
 import os
 import pickle
+import bcrypt
+import pika
+import json
+from datetime import datetime 
 
 # Function used to tokenize the passwords that are in the dataset!
 # We do this because we need the model to learn from the combination of characters (digits, letters, symbols) to predict the password's strength
@@ -16,15 +20,38 @@ def word(password):
         character.append(i)
     return character
 
+# Write a function that creates a connection and a channel and a queue in RabbitMQ
+def create_connection():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='password_queue')
+    return channel
+
+# This function is used to publish the message to the RabbitMQ queue
+# The message is the password that the user has entered as well as the password's strength - The date and time is also included
+def publish_message(message):
+    print("test")
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    print("test2")
+    channel = connection.channel()
+    print("test3")
+    channel.queue_declare(queue='password_queue')
+    print("test4")
+
+    channel.basic_publish(exchange='', 
+                            routing_key='password_queue', 
+                            body=json.dumps(message))
+    connection.close()
+
 # If it has, load the model and TfidVectorizer from disk
 # If it hasn't, train the model and save it to disk
-if os.path.exists("Password-Strength-Checker\Services\StrengthCheckerService\model.pkl"):
+if os.path.exists("model.pkl"):
     print("Loading model from disk... ")
-    with open('Password-Strength-Checker\Services\StrengthCheckerService\model.pkl', 'rb') as f:
+    with open('model.pkl', 'rb') as f:
         model, tdif = pickle.load(f)
 else:
     print("Training model...")
-    data = pd.read_csv("Password-Strength-Checker\Services\StrengthCheckerService\Data\shortdata.csv", error_bad_lines=False)
+    data = pd.read_csv("Data\shortdata.csv", error_bad_lines=False)
 
     # The numbers 0, 1 and 2 means "weak", "medium" and "strong" respectively
     # We will map the numbers to the corresponding words
@@ -52,12 +79,22 @@ else:
     print("accuracy ", model.score(xtest, ytest))
 
     # Save the model to disk 
-    with open("Services/StrengthCheckerService//model.pkl", "wb") as f:
+    with open("model.pkl", "wb") as f:
         pickle.dump((model, tdif), f)
 
-# We will now ask the user to input a password and the model will predict the password's strength
+# We will now ask the user to input a password and the MachineLearning model will predict the password's strength
 print("Enter a password to test its strength")
 user = getpass.getpass("Enter Password: ")
 data = tdif.transform([user]).toarray()
-output = model.predict(data)
-print(output)
+strength = model.predict(data)
+
+# Hash the password and add a salt to it
+salt = bcrypt.gensalt()
+hashed_password = bcrypt.hashpw(user.encode('utf-8'), salt)
+
+# Get current date and time
+passwordGenerationDate = datetime.today().strftime('%Y-%m-%d')
+
+# Publish the message to the RabbitMQ queue 
+# The message is the password that the user has entered as well as the password's strength - The date and time is also included
+publish_message({"PasswordHash": hashed_password.decode('utf-8'), "PasswordStrength": strength[0], "PasswordDateTime": passwordGenerationDate})
