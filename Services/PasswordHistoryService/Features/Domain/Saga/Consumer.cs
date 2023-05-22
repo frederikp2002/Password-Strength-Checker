@@ -74,7 +74,6 @@ public class Consumer : BackgroundService
     public async Task CreatePassword(CreateRequestDto password)
     {
         var uri = "https://localhost:44397/api/PasswordHistory/Create";
-        Debug.WriteLine("GOT URI PLS WORK");
         var json = JsonSerializer.Serialize(password);
 
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");

@@ -1,54 +1,34 @@
-﻿using MassTransit;
+﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace PasswordHistoryService.Features.Domain.Saga;
 
-public class PasswordCheck
+public class Orchestrator : BackgroundService
 {
-    public string Password { get; set; } = null!;
-    public string PasswordStrength { get; set; } = null!;
-}
+    private readonly IModel _channel;
+    private readonly IConnection _connection;
+    private readonly HttpClient _httpClient;
 
-public class Orchestrator : IConsumer<PasswordCheck>
-{
-    public async Task Consume(ConsumeContext<PasswordCheck> context)
+    public Orchestrator(HttpClient httpclient)
     {
-        var passwordCheck = context.Message;
-        Console.WriteLine($"Password: {passwordCheck.Password}");
-        Console.WriteLine($"PasswordStrength: {passwordCheck.PasswordStrength}");
+        _httpClient = httpclient;
+        var factory = new ConnectionFactory { HostName = "localhost" };
+        _connection = factory.CreateConnection();
+        _channel = _connection.CreateModel();
+        _channel.QueueDeclare("password_queue", false, false, false, null);
     }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var consumer = new EventingBasicConsumer(_channel);
+            // The orchestrator could poll a RabbitMQ queue for new passwords to process
+            // If a new password is available, it could call ProcessPasswordAsync to process it
+            // ...
+
+            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+        }
+    }
+
 }
-
-//public class Orchestrator
-//{
-//private readonly IModel _channel;
-//private readonly IConnection _connection;
-
-//public Orchestrator()
-//{
-//    // Create a connection factory
-//    var factory = new ConnectionFactory { HostName = "localhost" };
-
-//    // Create a connection to RabbitMQ
-//    _connection = factory.CreateConnection();
-
-//    // Create a channel to communicate with RabbitMQ
-//    _channel = _connection.CreateModel();
-
-//    // Declare an exchange where message will be sent
-//    // an exchange is like a mailbox attached to a post office
-//    _channel.ExchangeDeclare("PasswordStrengthChecked", ExchangeType.Direct);
-
-//    // Declare a queue where the message will be stored
-//    // a queue is like a mailbox
-//    var queueName = _channel.QueueDeclare().QueueName;
-
-//    // Bind the queue to the exchange
-//    // a routingKey is like a name of a person
-//    _channel.QueueBind(queueName, "PasswordStrengthChecked", "PasswordStrengthChecked");
-
-//    // Create a consumer to consume message from the queue
-//    var consumer = new EventingBasicConsumer(_channel);
-
-//    // Deserialize the message
-//}
-//}
