@@ -30,13 +30,10 @@ def create_connection():
 # This function is used to publish the message to the RabbitMQ queue
 # The message is the password that the user has entered as well as the password's strength - The date and time is also included
 def publish_message(message):
-    print("test")
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    print("test2")
     channel = connection.channel()
-    print("test3")
     channel.queue_declare(queue='password_queue')
-    print("test4")
+    print("Password hash and strength to database... Done!")
 
     channel.basic_publish(exchange='', 
                             routing_key='password_queue', 
@@ -87,6 +84,7 @@ print("Enter a password to test its strength")
 user = getpass.getpass("Enter Password: ")
 data = tdif.transform([user]).toarray()
 strength = model.predict(data)
+print("The password's strength is:", strength[0])
 
 # Hash the password and add a salt to it
 salt = bcrypt.gensalt()
