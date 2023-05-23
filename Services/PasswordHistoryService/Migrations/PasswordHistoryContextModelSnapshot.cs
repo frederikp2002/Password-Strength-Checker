@@ -43,7 +43,7 @@ namespace PasswordHistoryService.Migrations
 
                     b.HasKey("PasswordId");
 
-                    b.ToTable("Passwords");
+                    b.ToTable("Passwords", (string)null);
                 });
 #pragma warning restore 612, 618
         }
