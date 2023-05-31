@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-import getpass
+from getpass import getpass
 import os
 import pickle
 import bcrypt
@@ -15,17 +15,10 @@ from datetime import datetime
 # Function used to tokenize the passwords that are in the dataset!
 # We do this because we need the model to learn from the combination of characters (digits, letters, symbols) to predict the password's strength
 def word(password):
-    character=[]
-    for i in password:
-        character.append(i)
-    return character
-
-# Write a function that creates a connection and a channel and a queue in RabbitMQ
-def create_connection():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-    channel.queue_declare(queue='password_queue')
-    return channel
+     character=[]
+     for i in password:
+         character.append(i)
+     return character
 
 # This function is used to publish the message to the RabbitMQ queue
 # The message is the password that the user has entered as well as the password's strength - The date and time is also included
@@ -48,7 +41,7 @@ if os.path.exists("model.pkl"):
         model, tdif = pickle.load(f)
 else:
     print("Training model...")
-    data = pd.read_csv("Data\shortdata.csv", error_bad_lines=False)
+    data = pd.read_csv("Data\data.csv", error_bad_lines=False)
 
     # The numbers 0, 1 and 2 means "weak", "medium" and "strong" respectively
     # We will map the numbers to the corresponding words
@@ -60,18 +53,19 @@ else:
         })
 
     # We will now split the dataset into training and testing data
+    # and then prepare the data for training a machine learning model
     x = np.array(data["password"])
     y = np.array(data["strength"])
-    print("tokenizing...")
+    #print("tokenizing...")
 
     tdif = TfidfVectorizer(tokenizer=word)
     x = tdif.fit_transform(x)
-    xtrain, xtest, ytrain, ytest = train_test_split(x, y, test_size=0.05, random_state=42)
+    xtrain, xtest, ytrain, ytest = train_test_split(x, y, test_size=0.25, random_state=42)
     print("training...")
 
     # We will now train the model using the Random Forest Classifier
-    model = RandomForestClassifier()
-    print("testing... - this may take a while depending on the size of the dataset and the speed of your computer")
+    model = RandomForestClassifier() # A learning method
+    print("training... - this may take a while depending on the size of the dataset and the speed of your computer")
     model.fit(xtrain, ytrain)
     print("accuracy ", model.score(xtest, ytest))
 
@@ -81,7 +75,7 @@ else:
 
 # We will now ask the user to input a password and the MachineLearning model will predict the password's strength
 print("Enter a password to test its strength")
-user = getpass.getpass("Enter Password: ")
+user = getpass("Enter Password: ")
 data = tdif.transform([user]).toarray()
 strength = model.predict(data)
 print("The password's strength is:", strength[0])

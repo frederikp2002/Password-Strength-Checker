@@ -18,9 +18,9 @@ public class Consumer : BackgroundService
         _httpClient = httpClient;
         // Create a new ConnectionFactory, which will be used to create connections to RabbitMQ.
         // The HostName is set to localhost, indicating that RabbitMQ is running on the same machine.
-        var factory = new ConnectionFactory { HostName = "localhost" };
+        var connectionFactory = new ConnectionFactory { HostName = "localhost" };
         // Create a new connection to RabbitMQ using the factory we just created.
-        _connection = factory.CreateConnection();
+        _connection = connectionFactory.CreateConnection();
         // Create a channel within that connection. All the communication with RabbitMQ is done through a channel
         _channel = _connection.CreateModel();
 
@@ -64,7 +64,7 @@ public class Consumer : BackgroundService
         return Task.CompletedTask;
     }
 
-    public override void Dispose()
+    public override void Dispose() // Is called when the service is stopped
     {
         _channel.Close();
         _connection.Close();
